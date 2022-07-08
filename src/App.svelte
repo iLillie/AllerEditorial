@@ -1,15 +1,15 @@
 <script>
   import RaceRow from "./lib/RaceRow.svelte";
   import Data from "./data.json";
+  import { onMount } from 'svelte';
   $: location = Object.keys(Data.locations)[0];
+
   let updateLocation = (locationValue) => {
       location = locationValue;
-      console.log("Hi");
   }
 
-  import { onMount } from 'svelte';
-
   let ready = false;
+
   onMount(() => ready = true);
 </script>
 
@@ -43,6 +43,8 @@
         margin: 0;
         padding: 0;
         font-family: sans-serif;
+        background-color: #333333;
+        color: #dedede;
     }
 
     main {
@@ -55,17 +57,27 @@
       height: 20rem;
       overflow-y:auto;
       padding: 1rem;
-      background-color: antiquewhite;
-      border-radius: 5px;
+      background-color: #444;
+      border-radius: 8px;
   }
 
   ul {
       display: flex;
       list-style: none;
       gap: 0.5rem;
+      padding: 0;
   }
 
   li {
       padding: 0;
+  }
+
+  button {
+      border: none;
+      font-size: 1.25rem;
+      padding: 0.5rem 1rem;
+      color: #dedede;
+      background-color: #444444;
+      border-radius: 3px;
   }
 </style>
