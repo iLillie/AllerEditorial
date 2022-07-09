@@ -6,21 +6,48 @@
 
   let updateLocation = (locationValue) => {
       location = locationValue;
+      changes++;
   }
 
+  let onlyNorwegian = () => {
+      changes++;
+    if(countryFilter == "") {
+        countryFilter = "Norway";
+    } else {
+        countryFilter = "";
+    }
+  }
+
+  let countryFilter = "";
+
   let ready = false;
+
+  let filterCountry = (countryRanks) => {
+      if(countryFilter == "") return countryRanks;
+      return countryRanks.filter(countryRank => countryRank.person.country == countryFilter);
+  }
+
+  let changes = 0;
 
   onMount(() => ready = true);
 </script>
 
 <main>
   <div class="thing">
+    <header>
+      <h2>{Data.racedata.competitionName} {Data.racedata.season}</h2>
+      <div class="flex">
+        <p>{location} / {Data.racedata.name}</p>
+        <button on:click={() => onlyNorwegian()}>Only Norwegian</button>
+      </div>
+
+    </header>
     <div class="test">
       <table>
         <tbody>
         {#if ready}
-          {#key location}
-            {#each Data.locations[location] as raceData}
+          {#key changes}
+            {#each filterCountry(Data.locations[location]) as raceData}
               {#if raceData.rank != null}
                 <RaceRow rankObject={raceData}></RaceRow>
               {/if}
@@ -42,7 +69,7 @@
     :global(body) {
         margin: 0;
         padding: 0;
-        font-family: sans-serif;
+        font-family: 'Montserrat', sans-serif;
         background-color: #333333;
         color: #dedede;
     }
@@ -57,7 +84,7 @@
       height: 20rem;
       overflow-y:auto;
       padding: 1rem;
-      background-color: #444;
+      background-color: #262626;
       border-radius: 8px;
   }
 
@@ -77,7 +104,18 @@
       font-size: 1.25rem;
       padding: 0.5rem 1rem;
       color: #dedede;
-      background-color: #444444;
+      background-color: #565656;
+      font-family: 'Montserrat', sans-serif;
       border-radius: 3px;
   }
+
+  button:hover {
+      background-color: #676767;
+  }
+
+  p {
+      font-size: 1.5rem;
+  }
+
+
 </style>
