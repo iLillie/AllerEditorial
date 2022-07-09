@@ -8,23 +8,9 @@
 </main>
 
 <style>
-    :global(body) {
-        margin: 0;
-        padding: 0;
-        font-family: 'Montserrat', sans-serif;
-        background-color: #333333;
-        color: #dedede;
-    }
-
     main {
         display: grid;
         place-items: center;
         min-height: 100vh;
     }
-
-
-
-
-
-
 </style>

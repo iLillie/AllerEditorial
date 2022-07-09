@@ -1,86 +1,91 @@
 <script>
-    import RaceRow from "./RaceRow.svelte";
+    import {onMount} from 'svelte';
+    import {fly} from 'svelte/transition';
 
-    import { onMount } from 'svelte';
     export let raceData = {};
     let updateTable = 0;
-    let itemId = 0;
+    let rowPlacement = 0;
     let location = Object.keys(raceData.locations)[0];
     let isNorwegianFilter = false;
-    let ready = false;
 
-    let updateLocation = (locationValue) => {
+    onMount(() => updateTable = 1);
+
+    let setLocation = (locationValue) => {
         location = locationValue;
         updateTable++;
     }
 
-    let onlyNorwegian = () => {
+    let updateNorwegianFilter = () => {
         updateTable++;
         isNorwegianFilter = !isNorwegianFilter;
     }
 
+    let locationDataList = () => filterNorway(raceData.locations[location]);
 
-
-    let filterNorway = (countryRanks) => {
-        itemId = 0;
-        if(!isNorwegianFilter) return countryRanks;
-        return countryRanks.filter(countryRank => countryRank.person.country == "Norway");
+    let filterNorway = (playerData) => {
+        rowPlacement = 0;
+        return !isNorwegianFilter ? playerData : playerData.filter(player => player.person.country == "Norway")
     }
 
+    let shortenCountryName = (country) => country.slice(0, 3).toUpperCase();
+    let getRowPlacement = () => rowPlacement++;
+    let hasTimeDifference = (locationData) => locationData.timeDifference !== undefined;
 
-
-    let getId = () => {
-        return itemId++;
-    }
-
-    onMount(() => updateTable = 1);
 </script>
 
 
-<article class="thing">
+<article>
   <header>
     <h2>{raceData.racedata.competitionName} {raceData.racedata.season}</h2>
-      <p>{location} into the track</p>
+    <p>{location} into the track</p>
   </header>
   <nav>
     <ul>
       {#each Object.keys(raceData.locations) as locationKey}
         <li>
-          <button on:click={() => updateLocation(locationKey)}>{locationKey}</button>
+          <button on:click={() => setLocation(locationKey)}>
+            {locationKey}
+          </button>
         </li>
       {/each}
       <li>
-        <button on:click={() => onlyNorwegian()}>
+        <button on:click={() => updateNorwegianFilter()}>
           {isNorwegianFilter ? "Show all" : "Show Norwegian"}
         </button>
       </li>
     </ul>
   </nav>
-  <div class="test">
+  <div class="table-container">
     <table>
       <tbody>
-          {#key updateTable}
-            {#each filterNorway(raceData.locations[location]) as locationData}
-              {#if locationData.rank != null}
-                <RaceRow itemId={getId()} rankObject={locationData}></RaceRow>
-              {/if}
-            {/each}
-          {/key}
+      {#key updateTable}
+        {#each locationDataList() as locationData}
+          {#if locationData.rank != null}
+            <tr in:fly="{{ y: 120, duration: 1500, delay: 35 * getRowPlacement() }}">
+              <td class="rank">
+                {locationData.rank}
+              </td>
+              <td>
+                {shortenCountryName(locationData.person.country)}
+              </td>
+              <td>{locationData.duration}
+                {#if hasTimeDifference(locationData)}
+                  <span class="time-difference">({locationData.timeDifference})</span>
+                {/if}
+              </td>
+              <td>{locationData.person.name}</td>
+            </tr>
+          {/if}
+        {/each}
+      {/key}
       </tbody>
     </table>
   </div>
 </article>
 
 <style>
-    .test {
-        width: 46rem;
-        height: 20rem;
-        overflow-y:auto;
-        padding: 1rem;
-        background-color: #262626;
-        border-radius: 8px;
-        color: #dedede;
-        font-family: 'Montserrat', sans-serif;
+    td {
+        padding: 0.5rem 0.5rem;
     }
 
     ul {
@@ -94,22 +99,51 @@
         padding: 0;
     }
 
-
     button {
         border: none;
-        font-size: 1.25rem;
+        font-size: 1.125rem;
         padding: 0.5rem 1rem;
-        color: #dedede;
-        background-color: #565656;
+        background-color: #222222;
         font-family: 'Montserrat', sans-serif;
         border-radius: 3px;
     }
 
     button:hover {
-        background-color: #676767;
+        background-color: #1a1a1a;
+    }
+
+    h2, p, button {
+        color: white;
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
     }
 
     p {
+        margin-block: 0.5rem;
+        color: #e8e8e8;
         font-size: 1.5rem;
+    }
+
+    header {
+        margin-block: 2rem;
+    }
+
+    .table-container {
+        max-width: 46rem;
+        height: 20rem;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #222222;
+        border-radius: 8px;
+        color: #dedede;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .rank {
+        font-weight: bold;
+    }
+
+    .time-difference {
+        color: goldenrod;
     }
 </style>
