@@ -146,4 +146,23 @@
     .time-difference {
         color: goldenrod;
     }
+
+    /* Scrollbar CSS */
+
+    .table-container::-webkit-scrollbar-track
+    {
+        background-color: #3b3b3b;
+    }
+
+    .table-container::-webkit-scrollbar
+    {
+        width: 8px;
+        background-color: #000000;
+    }
+
+    .table-container::-webkit-scrollbar-thumb
+    {
+        background-color: #d5d5d5;
+        border-radius: 2px;
+    }
 </style>
