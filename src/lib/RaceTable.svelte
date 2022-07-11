@@ -6,27 +6,26 @@
     let updateTable = 0;
     let rowPlacement = 0;
     let location = Object.keys(raceData.locations)[0];
-    let isNorwegianFilter = false;
+    const uniqueCountries = new Set();
+    let countryFilter = "all";
 
-    onMount(() => updateTable = 1);
+    raceData.locations["1.1km"].forEach(data => {
+        uniqueCountries.add(data.person.country);
+    });
+
+    onMount(() => { updateTable = 1});
 
     let setLocation = (locationValue) => {
         location = locationValue;
         updateTable++;
     }
 
-    let updateNorwegianFilter = () => {
-        updateTable++;
-        isNorwegianFilter = !isNorwegianFilter;
-    }
-
-    let locationDataList = () => filterNorway(raceData.locations[location]);
-
-    let filterNorway = (playerData) => {
+    let filterCountry = (playerData) => {
         rowPlacement = 0;
-        return !isNorwegianFilter ? playerData : playerData.filter(player => player.person.country == "Norway")
+        return countryFilter == "all" ? playerData : playerData.filter(player => player.person.country == countryFilter);
     }
 
+    let locationDataList = () => filterCountry(raceData.locations[location]);
     let shortenCountryName = (country) => country.slice(0, 3).toUpperCase();
     let getRowPlacement = () => rowPlacement++;
     let hasTimeDifference = (locationData) => locationData.timeDifference !== undefined;
@@ -49,9 +48,12 @@
         </li>
       {/each}
       <li>
-        <button on:click={() => updateNorwegianFilter()}>
-          {isNorwegianFilter ? "Show all" : "Show Norwegian"}
-        </button>
+        <select bind:value={countryFilter} on:change="{() => updateTable++}" name="filter" id="filter">
+          <option value="all">All countries</option>
+          {#each [...uniqueCountries.values()] as country}
+            <option value={country}>{country}</option>
+          {/each}
+        </select>
       </li>
     </ul>
   </nav>
@@ -165,4 +167,16 @@
         background-color: #d5d5d5;
         border-radius: 2px;
     }
+
+    /* Select style */
+
+    select {
+        background-color: #222222;
+        border: none;
+        border-radius: 4px;
+        font-size: 1.125rem;
+        padding: 0.5rem 1rem;
+        font-family: 'Montserrat', sans-serif;
+    }
+
 </style>
