@@ -3,7 +3,7 @@ Frontend Editoral Tech Task
 
 ## Preview
 Hosted on [Vercel](https://vercel.com).  
-[Aller editoral demo](https://aller-editorial.vercel.app/)
+[Aller editoral demo](https://editorial.lillie.work/)
 
 https://user-images.githubusercontent.com/75392499/178222115-3910c85c-0874-44e7-bc12-468a47008032.mp4
 
